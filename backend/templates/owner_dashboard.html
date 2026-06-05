@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><title>Espace Propriétaire</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"></head>
+<body><nav class="navbar navbar-dark bg-primary"><div class="container"><a class="navbar-brand" href="#">Gestion Locative - Propriétaire</a><div><a class="nav-link text-white" href="/profile">Profil</a><a class="nav-link text-white" href="/logout">Déconnexion</a></div></div></nav>
+<div class="container mt-4"><h2>Espace Propriétaire</h2><div class="alert alert-info">Gérez vos propriétés, baux et suivez les paiements ici.</div>
+<div class="row"><div class="col-md-6"><div class="card"><div class="card-header">Mes Propriétés</div><div class="card-body" id="owner-properties">Chargement...</div></div></div>
+<div class="col-md-6"><div class="card"><div class="card-header">Demandes de location</div><div class="card-body" id="owner-requests">Chargement...</div></div></div></div></div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script><script>
+$.get('/api/properties', function(data) { let html='<ul class="list-group">'; data.forEach(p=>{html+=`<li class="list-group-item">${p.title} - ${p.rent_amount}€</li>`}); html+='</ul>'; $('#owner-properties').html(html); });
+$.get('/api/rental-requests', function(data) { let html='<ul class="list-group">'; data.forEach(r=>{html+=`<li class="list-group-item">Demande #${r.id} - Statut: ${r.status}</li>`}); html+='</ul>'; $('#owner-requests').html(html); });
+</script></body></html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Gestion Locative</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/dashboard">Gestion Locative - Admin</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/profile">Profil</a>
+                <a class="nav-link" href="/logout">Déconnexion</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-4">
+        <h2>Tableau de bord Administrateur</h2>
+        
+        <div class="row mt-4" id="stats">
+            <div class="col-md-3">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Utilisateurs</h5>
+                        <h2 id="total-users">-</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Propriétés</h5>
+                        <h2 id="total-properties">-</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Baux actifs</h5>
+                        <h2 id="total-leases">-</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-warning mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Revenus mensuels</h5>
+                        <h2 id="monthly-revenue">- €</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <ul class="nav nav-tabs mt-4" id="adminTabs" role="tablist">
+            <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#users">Utilisateurs</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#properties">Propriétés</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#leases">Baux</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#payments">Paiements</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#complaints">Réclamations</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#requests">Demandes</a></li>
+        </ul>
+        
+        <div class="tab-content mt-3">
+            <div class="tab-pane fade show active" id="users">
+                <div class="card">
+                    <div class="card-header">
+                        <button class="btn btn-primary btn-sm" onclick="showAddUserModal()">+ Ajouter un utilisateur</button>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped" id="usersTable">
+                            <thead><tr><th>ID</th><th>Nom</th><th>Email</th><th>Rôle</th><th>Téléphone</th><th>Actions</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-pane fade" id="properties">
+                <div class="card">
+                    <div class="card-header">
+                        <button class="btn btn-primary btn-sm" onclick="showAddPropertyModal()">+ Ajouter une propriété</button>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped" id="propertiesTable">
+                            <thead><tr><th>Titre</th><th>Adresse</th><th>Ville</th><th>Loyer</th><th>Disponible</th><th>Propriétaire</th><th>Actions</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-pane fade" id="leases">
+                <div class="card">
+                    <div class="card-header">
+                        <button class="btn btn-primary btn-sm" onclick="showAddLeaseModal()">+ Créer un bail</button>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped" id="leasesTable">
+                            <thead><tr><th>ID</th><th>Propriété</th><th>Locataire</th><th>Début</th><th>Fin</th><th>Loyer</th><th>Statut</th><th>Actions</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-pane fade" id="payments">
+                <div class="card">
+                    <div class="card-header">
+                        <button class="btn btn-primary btn-sm" onclick="showAddPaymentModal()">+ Enregistrer paiement</button>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped" id="paymentsTable">
+                            <thead><tr><th>Bail ID</th><th>Montant</th><th>Date échéance</th><th>Date paiement</th><th>Statut</th><th>Méthode</th><th>Actions</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-pane fade" id="complaints">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-striped" id="complaintsTable">
+                            <thead><tr><th>Titre</th><th>Type</th><th>Description</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-pane fade" id="requests">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-striped" id="requestsTable">
+                            <thead><tr><th>Propriété</th><th>Locataire</th><th>Message</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="userModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Utilisateur</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" id="userModalBody"></div></div></div></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function loadStats() {
+            $.get('/api/stats', function(data) {
+                $('#total-users').text(data.total_users);
+                $('#total-properties').text(data.total_properties);
+                $('#total-leases').text(data.total_leases);
+                $('#monthly-revenue').text(data.monthly_revenue + ' €');
+            });
+        }
+        
+        function loadUsers() {
+            $.get('/api/users', function(users) {
+                let html = '';
+                users.forEach(u => {
+                    html += `<tr><td>${u.id}</td><td>${u.first_name} ${u.last_name}</td><td>${u.email}</td><td>${u.role}</td><td>${u.phone || '-'}</td>
+                             <td><button class="btn btn-sm btn-warning" onclick="editUser(${u.id})">✏️</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteUser(${u.id})">🗑️</button></td></tr>`;
+                });
+                $('#usersTable tbody').html(html);
+            });
+        }
+        
+        function loadProperties() {
+            $.get('/api/properties', function(props) {
+                let html = '';
+                props.forEach(p => {
+                    html += `<tr><td>${p.title}</td><td>${p.address}</td><td>${p.city}</td><td>${p.rent_amount} €</td>
+                             <td>${p.is_available ? '✅' : '❌'}</td><td>ID: ${p.owner_id}</td>
+                             <td><button class="btn btn-sm btn-warning" onclick="editProperty(${p.id})">✏️</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteProperty(${p.id})">🗑️</button></td></tr>`;
+                });
+                $('#propertiesTable tbody').html(html);
+            });
+        }
+        
+        function loadLeases() {
+            $.get('/api/leases', function(leases) {
+                let html = '';
+                leases.forEach(l => {
+                    html += `<tr><td>${l.id}</td><td>${l.property_id}</td><td>${l.tenant_id}</td><td>${l.start_date}</td>
+                             <td>${l.end_date}</td><td>${l.rent_amount} €</td><td>${l.status}</td>
+                             <td><button class="btn btn-sm btn-warning" onclick="editLease(${l.id})">✏️</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteLease(${l.id})">🗑️</button></td></tr>`;
+                });
+                $('#leasesTable tbody').html(html);
+            });
+        }
+        
+        function loadPayments() {
+            $.get('/api/payments', function(payments) {
+                let html = '';
+                payments.forEach(p => {
+                    html += `<tr><td>${p.lease_id}</td><td>${p.amount} €</td><td>${p.due_date}</td>
+                             <td>${p.payment_date || '-'}</td><td>${p.status}</td><td>${p.payment_method || '-'}</td>
+                             <td><button class="btn btn-sm btn-success" onclick="markPaid(${p.id})">💰 Payer</button></td></tr>`;
+                });
+                $('#paymentsTable tbody').html(html);
+            });
+        }
+        
+        function loadComplaints() {
+            $.get('/api/complaints', function(complaints) {
+                let html = '';
+                complaints.forEach(c => {
+                    html += `<tr><td>${c.title}</td><td>${c.type}</td><td>${c.description.substring(0,50)}...</td>
+                             <td>${c.status}</td><td>${c.created_at}</td>
+                             <td><select onchange="updateComplaintStatus(${c.id}, this.value)" class="form-select form-select-sm">
+                                <option ${c.status=='pending'?'selected':''} value="pending">En attente</option>
+                                <option ${c.status=='in_progress'?'selected':''} value="in_progress">En cours</option>
+                                <option ${c.status=='resolved'?'selected':''} value="resolved">Résolu</option>
+                            </select></td></tr>`;
+                });
+                $('#complaintsTable tbody').html(html);
+            });
+        }
+        
+        function loadRequests() {
+            $.get('/api/rental-requests', function(requests) {
+                let html = '';
+                requests.forEach(r => {
+                    html += `<tr><td>${r.property_id}</td><td>${r.tenant_id}</td><td>${r.message || '-'}</td>
+                             <td>${r.status}</td><td>${r.created_at}</td>
+                             <td><select onchange="updateRequestStatus(${r.id}, this.value)" class="form-select form-select-sm">
+                                <option ${r.status=='pending'?'selected':''} value="pending">En attente</option>
+                                <option ${r.status=='approved'?'selected':''} value="approved">Approuvé</option>
+                                <option ${r.status=='rejected'?'selected':''} value="rejected">Rejeté</option>
+                            </select></td></tr>`;
+                });
+                $('#requestsTable tbody').html(html);
+            });
+        }
+        
+        function showAddUserModal() {
+            $('#userModalBody').html(`
+                <form id="userForm"><input type="hidden" name="id">
+                <div class="mb-3"><label>Prénom</label><input type="text" name="first_name" class="form-control" required></div>
+                <div class="mb-3"><label>Nom</label><input type="text" name="last_name" class="form-control" required></div>
+                <div class="mb-3"><label>Email</label><input type="email" name="email" class="form-control" required></div>
+                <div class="mb-3"><label>Mot de passe</label><input type="password" name="password" class="form-control" required></div>
+                <div class="mb-3"><label>Rôle</label><select name="role" class="form-control"><option value="tenant">Locataire</option><option value="owner">Propriétaire</option><option value="admin">Admin</option></select></div>
+                <div class="mb-3"><label>Téléphone</label><input type="text" name="phone" class="form-control"></div>
+                <div class="mb-3"><label>Adresse</label><textarea name="address" class="form-control"></textarea></div>
+                </form>
+            `);
+            $('#userModal').modal('show');
+            $('#userForm').off('submit').on('submit', function(e) {
+                e.preventDefault();
+                $.post('/api/users', JSON.stringify(Object.fromEntries(new FormData(this))), function() {
+                    $('#userModal').modal('hide');
+                    loadUsers(); loadStats();
+                }).fail(() => alert('Erreur'));
+            });
+        }
+        
+        function editUser(id) {
+            $.get('/api/users', function(users) {
+                const user = users.find(u => u.id == id);
+                $('#userModalBody').html(`
+                    <form id="userForm"><input type="hidden" name="id" value="${id}">
+                    <div class="mb-3"><label>Prénom</label><input type="text" name="first_name" value="${user.first_name}" class="form-control" required></div>
+                    <div class="mb-3"><label>Nom</label><input type="text" name="last_name" value="${user.last_name}" class="form-control" required></div>
+                    <div class="mb-3"><label>Email</label><input type="email" name="email" value="${user.email}" class="form-control" required></div>
+                    <div class="mb-3"><label>Rôle</label><select name="role" class="form-control"><option ${user.role=='admin'?'selected':''} value="admin">Admin</option><option ${user.role=='owner'?'selected':''} value="owner">Propriétaire</option><option ${user.role=='tenant'?'selected':''} value="tenant">Locataire</option></select></div>
+                    <div class="mb-3"><label>Téléphone</label><input type="text" name="phone" value="${user.phone||''}" class="form-control"></div>
+                    <div class="mb-3"><label>Adresse</label><textarea name="address" class="form-control">${user.address||''}</textarea></div>
+                    </form>
+                `);
+                $('#userModal').modal('show');
+                $('#userForm').off('submit').on('submit', function(e) {
+                    e.preventDefault();
+                    $.ajax({url:`/api/users/${id}`, method:'PUT', data:JSON.stringify(Object.fromEntries(new FormData(this))), contentType:'application/json'})
+                    .then(() => { $('#userModal').modal('hide'); loadUsers(); });
+                });
+            });
+        }
+        
+        function deleteUser(id) { if(confirm('Supprimer ?')) $.ajax({url:`/api/users/${id}`, method:'DELETE'}).then(() => { loadUsers(); loadStats(); }); }
+        function deleteProperty(id) { if(confirm('Supprimer ?')) $.ajax({url:`/api/properties/${id}`, method:'DELETE'}).then(() => loadProperties()); }
+        function deleteLease(id) { if(confirm('Supprimer le bail ?')) $.ajax({url:`/api/leases/${id}`, method:'DELETE'}).then(() => loadLeases()); }
+        function markPaid(id) { $.ajax({url:`/api/payments/${id}`, method:'PUT', data:JSON.stringify({status:'paid', payment_date:new Date().toISOString().split('T')[0]}), contentType:'application/json'}).then(() => loadPayments()); }
+        function updateComplaintStatus(id, status) { $.ajax({url:`/api/complaints/${id}`, method:'PUT', data:JSON.stringify({status}), contentType:'application/json'}).then(() => loadComplaints()); }
+        function updateRequestStatus(id, status) { $.ajax({url:`/api/rental-requests/${id}`, method:'PUT', data:JSON.stringify({status}), contentType:'application/json'}).then(() => loadRequests()); }
+        
+        function showAddPropertyModal() { alert('Fonctionnalité complète dans la version finale'); }
+        function editProperty(id) { alert('Édition propriété'); }
+        function showAddLeaseModal() { alert('Création bail'); }
+        function editLease(id) { alert('Édition bail'); }
+        function showAddPaymentModal() { alert('Enregistrement paiement'); }
+        
+        $(document).ready(function() {
+            loadStats(); loadUsers(); loadProperties(); loadLeases(); loadPayments(); loadComplaints(); loadRequests();
+            $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
+                if(e.target.hash === '#users') loadUsers();
+                else if(e.target.hash === '#properties') loadProperties();
+                else if(e.target.hash === '#leases') loadLeases();
+                else if(e.target.hash === '#payments') loadPayments();
+                else if(e.target.hash === '#complaints') loadComplaints();
+                else if(e.target.hash === '#requests') loadRequests();
+            });
+        });
+    </script>
+</body>
+</html>
